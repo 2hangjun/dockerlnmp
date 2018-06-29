@@ -2,7 +2,7 @@ FROM alpine:3.7
 
 LABEL maintainer="Qing Shan Wu Pian Yun <zjeffort@gmail.com>"
 
-ENV NGINX_VERSION 1.15.0
+ENV NGINX_VERSION 1.18.0
 RUN echo -e "https://mirrors.aliyun.com/alpine/v3.6/main/\nhttps://mirrors.aliyun.com/alpine/v3.6/community/" > /etc/apk/repositories \
 	&& CONFIG="\
 		--user=nginx \
@@ -38,7 +38,7 @@ RUN echo -e "https://mirrors.aliyun.com/alpine/v3.6/main/\nhttps://mirrors.aliyu
 #		bison-dev \
 		zlib-dev \
 		libmcrypt-dev \
-		php5-mcrypt \
+#		php5-mcrypt \
 #		mcrypt \
 #		mhash-dev \
 		openssl-dev \
@@ -56,32 +56,33 @@ RUN echo -e "https://mirrors.aliyun.com/alpine/v3.6/main/\nhttps://mirrors.aliyu
 		libmcrypt \
 		freetype \
 		freetype-dev \
-		libtool \			
+		libtool \				
 #		libtool-ltdl \
 #		libtool-ltdl-dev \
-        && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
-        && mkdir -p /usr/src \
-        && tar -zxC /usr/src -f nginx.tar.gz \
-        && rm nginx.tar.gz \
-        && cd /usr/src/nginx-$NGINX_VERSION \
-        && ./configure $CONFIG \
-        && make && make install \
-        && rm -rf /usr/src/nginx-$NGINX_VERSION \
-        && mkdir -p /usr/local/nginx/logs/nginx \
-        && mkdir -p /usr/local/nginx/run/nginx \
-        && mkdir -p /usr/local/nginx/lock \
-        && mkdir -p /usr/local/nginx/tmp/nginx/client \
-        && mkdir -p /usr/local/nginx/tmp/nginx/fcgi \
-        && mkdir -p /usr/local/nginx/tmp/nginx/uwsgi \
-        && mkdir -p /usr/local/nginx/tmp/nginx/scgi \
-        && mkdir -p /usr/local/nginx/conf/vhosts \
-        && mkdir -p /var/log/nginx \
-        && mkdir -p /data/httpd
-                              
+	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
+	&& mkdir -p /usr/src \
+	&& tar -zxC /usr/src -f nginx.tar.gz \
+	&& rm nginx.tar.gz \
+	&& cd /usr/src/nginx-$NGINX_VERSION \
+	&& ./configure $CONFIG \
+	&& make && make install \
+	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
+	&& mkdir -p /usr/local/nginx/logs/nginx \
+	&& mkdir -p /usr/local/nginx/run/nginx \
+	&& mkdir -p /usr/local/nginx/lock \
+	&& mkdir -p /usr/local/nginx/tmp/nginx/client \
+	&& mkdir -p /usr/local/nginx/tmp/nginx/fcgi \
+	&& mkdir -p /usr/local/nginx/tmp/nginx/uwsgi \
+	&& mkdir -p /usr/local/nginx/tmp/nginx/scgi \
+	&& mkdir -p /usr/local/nginx/conf/vhosts \
+	&& mkdir -p /var/log/nginx \
+	&& mkdir -p /data/httpd 
+
 COPY nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
-COPY nginx/vhosts/default.conf /usr/local/nginx/conf/vhosts/default.conf                     
+COPY nginx/vhosts/default.conf /usr/local/nginx/conf/vhosts/default.conf
 COPY nginx/pathinfo.conf /usr/local/nginx/conf/pathinfo.conf
 COPY nginx/php_fcgi.conf /usr/local/nginx/conf/php_fcgi.conf
-COPY nginx/index.html /data/httpd/index.html 
+COPY nginx/index.html /data/httpd/index.html
 
+#RUN echo 'test';
 CMD ["/bin/sh"]
